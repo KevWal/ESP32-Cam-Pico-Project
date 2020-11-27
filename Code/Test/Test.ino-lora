@@ -1,0 +1,49 @@
+
+#include <SPI.h>
+#include <LoRa.h>
+
+long frq = 434500000;
+
+void setup() {
+  // put your setup code here, to run once:
+
+  Serial.begin(115200);
+  Serial.println("\r\nsetup()");
+  Serial.flush();
+
+  SPI.begin(14,12,13,15);    //  s(l)ck = gpio14, miso = gpio12, mosi = gpio13, (n)ss = gpio15
+  SPI.setFrequency(4000000);
+  LoRa.setPins(15,-1,-1);    // (n)ss = 15, reset = -1, dio0 = -1
+ 
+  LoRa.begin(frq);
+  LoRa.setSpreadingFactor(6);
+  LoRa.setSignalBandwidth(20.8E3);
+  LoRa.setCodingRate4(5);
+    
+  //LoRa.setPreambleLength(preambleLength);
+  LoRa.setSyncWord(0x12);
+  LoRa.enableCrc();
+  Serial.println("  Setup complete");
+
+}
+
+int i = 0;
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  Serial.println("\r\nloop()");
+  delay(1000);
+  
+  LoRa.beginPacket(1);
+  LoRa.write((const uint8_t *)"$$KEW01,217,21:20:43,52.323616,-0.708233,-1,1319,283,4,0,0,0,0*E112",67);
+  LoRa.endPacket(0);
+
+  delay(1000);
+
+  LoRa.beginPacket(1);
+  LoRa.print("Hello");
+  LoRa.endPacket(0);
+  
+  i++;
+}
