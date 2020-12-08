@@ -199,7 +199,7 @@
 <text x="0.5969" y="40.5892" size="1.143" layer="25" font="vector" ratio="15">+</text>
 <text x="0.2413" y="4.9276" size="1.143" layer="25" font="vector" ratio="15">+</text>
 <text x="4.0513" y="4.9276" size="1.6764" layer="25" font="vector" ratio="20">+</text>
-<text x="27.305" y="14.2875" size="1.016" layer="25" font="vector" ratio="15" rot="R180">PROG</text>
+<text x="27.305" y="8.89" size="1.016" layer="25" font="vector" ratio="15" rot="R180">PROG</text>
 <text x="0.2413" y="12.5476" size="1.143" layer="25" font="vector" ratio="15">-</text>
 <text x="4.3688" y="12.5476" size="1.6764" layer="25" font="vector" ratio="20">-</text>
 <text x="3.175" y="53.0225" size="1.016" layer="25" font="vector" ratio="15" rot="R180">V3</text>
@@ -2203,8 +2203,8 @@ Please make sure your boards conform to these design rules.
 <attribute name="PROD_ID" value="CONN-09696" x="-67.31" y="-41.5925" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="VALUE" x="0.508" y="14.2875" size="0.6096" layer="27" font="vector" ratio="20" rot="R270"/>
 </element>
-<element name="J3" library="SparkFun-Connectors" package="1X02_LOCK" value="" x="25.7175" y="9.2075" smashed="yes" rot="R90">
-<attribute name="VALUE" x="27.7495" y="7.9375" size="0.6096" layer="27" font="vector" ratio="20" rot="R90"/>
+<element name="J3" library="SparkFun-Connectors" package="1X02_LOCK" value="" x="25.654" y="10.668" smashed="yes" rot="R90">
+<attribute name="VALUE" x="27.686" y="9.398" size="0.6096" layer="27" font="vector" ratio="20" rot="R90"/>
 </element>
 <element name="JP1" library="SparkFun-Jumpers" package="SMT-JUMPER_2_NC_TRACE_NO-SILK" package3d_urn="urn:adsk.eagle:package:39286/1" value="JUMPER-SMT_2_NC_TRACE_NO-SILK" x="13.335" y="31.242" smashed="yes" rot="R270"/>
 <element name="JP10" library="SparkFun-Jumpers" package="SMT-JUMPER_2_NC_TRACE_NO-SILK" package3d_urn="urn:adsk.eagle:package:39286/1" value="JUMPER-SMT_2_NC_TRACE_NO-SILK" x="23.495" y="30.226" smashed="yes"/>
@@ -2453,7 +2453,7 @@ Please make sure your boards conform to these design rules.
 <via x="11.811" y="39.5605" extent="1-16" drill="0.35" diameter="0.6"/>
 <via x="23.876" y="10.4775" extent="1-16" drill="0.35" diameter="0.6"/>
 <via x="17.5895" y="5.207" extent="1-16" drill="0.35" diameter="0.6"/>
-<via x="25.4635" y="14.605" extent="1-16" drill="0.35" diameter="0.6"/>
+<via x="25.781" y="15.24" extent="1-16" drill="0.35" diameter="0.6"/>
 <via x="23.241" y="12.3825" extent="1-16" drill="0.35" diameter="0.6"/>
 <via x="21.971" y="17.78" extent="1-16" drill="0.35" diameter="0.6"/>
 <via x="3.2385" y="3.429" extent="1-16" drill="0.35" diameter="0.6"/>
@@ -2688,7 +2688,8 @@ Please make sure your boards conform to these design rules.
 <wire x1="2.54" y1="35.2425" x2="0.635" y2="33.3375" width="0.6096" layer="16"/>
 <wire x1="0.635" y1="33.3375" x2="0.635" y2="20.955" width="0.6096" layer="16"/>
 <wire x1="0.635" y1="20.955" x2="4.7625" y2="16.8275" width="0.6096" layer="16"/>
-<wire x1="21.1328" y1="16.51" x2="25.7175" y2="11.9253" width="0.6096" layer="16"/>
+<wire x1="25.654" y1="13.3858" x2="22.5298" y2="16.51" width="0.6096" layer="16"/>
+<wire x1="21.1328" y1="16.51" x2="22.5298" y2="16.51" width="0.6096" layer="16"/>
 <via x="15.24" y="16.51" extent="1-16" drill="0.35" diameter="0.6"/>
 <wire x1="15.24" y1="16.51" x2="21.1328" y2="16.51" width="0.6096" layer="1"/>
 <via x="21.1328" y="16.51" extent="1-16" drill="0.35" diameter="0.6"/>
@@ -2799,7 +2800,6 @@ Please make sure your boards conform to these design rules.
 <contactref element="J2" pad="4"/>
 <wire x1="12.6704" y1="14.3849" x2="3.683" y2="5.3975" width="0.4064" layer="1"/>
 <wire x1="2.413" y1="5.3975" x2="3.683" y2="5.3975" width="0.4064" layer="1"/>
-<wire x1="12.6704" y1="14.3849" x2="12.6704" y2="21.9896" width="0.4064" layer="1"/>
 <via x="17.4625" y="44.7675" extent="1-16" drill="0.5" diameter="1"/>
 <contactref element="J1" pad="2"/>
 <wire x1="20.0185" y1="47.0535" x2="20.2725" y2="47.3075" width="0.6096" layer="1"/>
@@ -2826,12 +2826,14 @@ Please make sure your boards conform to these design rules.
 <wire x1="20.955" y1="38.1" x2="21.9964" y2="38.1" width="0.1524" layer="1"/>
 <wire x1="23.5839" y1="39.0525" x2="28.0645" y2="39.0525" width="0.3048" layer="1"/>
 <wire x1="22.6314" y1="38.1" x2="23.5839" y2="39.0525" width="0.3048" layer="1"/>
-<wire x1="26.985" y1="42.7054" x2="28.0645" y2="42.7054" width="0" layer="19" extent="1-1"/>
+<wire x1="28.0645" y1="42.7054" x2="26.985" y2="42.7054" width="0" layer="19" extent="1-1"/>
+<wire x1="12.6704" y1="14.3849" x2="12.6275" y2="22.0325" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$15">
 <contactref element="J3" pad="1"/>
 <contactref element="JP6" pad="2"/>
-<wire x1="25.7175" y1="6.5532" x2="25.7175" y2="9.0297" width="0.3048" layer="1"/>
+<wire x1="25.654" y1="10.4902" x2="25.654" y2="6.6167" width="0.3048" layer="1"/>
+<wire x1="25.7175" y1="6.5532" x2="25.654" y2="6.6167" width="0.3048" layer="1"/>
 </signal>
 <signal name="N$18">
 <contactref element="IC1" pad="6"/>

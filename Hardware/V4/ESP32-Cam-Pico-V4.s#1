@@ -15014,12 +15014,12 @@ ZH has 1.5mm spacing.&lt;p&gt;
 <part name="JP6" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NC_TRACE" device="_NO-SILK" package3d_urn="urn:adsk.eagle:package:39286/1"/>
 <part name="JP9" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NC_TRACE" device="_NO-SILK" package3d_urn="urn:adsk.eagle:package:39286/1"/>
 <part name="JP10" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NC_TRACE" device="_NO-SILK" package3d_urn="urn:adsk.eagle:package:39286/1"/>
-<part name="R5" library="SparkFun-Resistors" deviceset="10KOHM" device="-0402-1/16W-1%" value="10k"/>
-<part name="R6" library="SparkFun-Resistors" deviceset="10KOHM" device="-0402-1/16W-1%" value="10k"/>
+<part name="R5" library="SparkFun-Resistors" deviceset="10KOHM" device="-0402-1/16W-1%" value="22k"/>
+<part name="R6" library="SparkFun-Resistors" deviceset="10KOHM" device="-0402-1/16W-1%" value="75k"/>
 <part name="GND23" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="IC2" library="linear" library_urn="urn:adsk.eagle:library:262" deviceset="MCP1703*" device="MB" package3d_urn="urn:adsk.eagle:package:16478/2" technology="33"/>
 <part name="GND24" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R7" library="SparkFun-Resistors" deviceset="10KOHM" device="-0402-1/16W-1%" value="10k"/>
+<part name="R7" library="SparkFun-Resistors" deviceset="10KOHM" device="-0402-1/16W-1%" value="22k"/>
 <part name="GND25" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="PAD5" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="SMD2" device="" package3d_urn="urn:adsk.eagle:package:30839/1"/>
 <part name="PAD6" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="SMD2" device="" package3d_urn="urn:adsk.eagle:package:30839/1"/>
@@ -15042,8 +15042,8 @@ ATGM336N
 <text x="175.26" y="53.34" size="1.6764" layer="91">Dorji DRF1278F
 1.8v to 3.6v</text>
 <text x="167.64" y="127" size="1.6764" layer="91">ESP32-CAM
-3.3v but seems to opperate
-down to 2.5v ok</text>
+ESP32 down to 2.5v or lower
+Camera down to 2.7v for bigger pics </text>
 <text x="88.9" y="142.24" size="3.81" layer="92" ratio="15">ESP32 Cam Pico Tracker</text>
 <text x="157.48" y="63.5" size="1.016" layer="91">Lora module reset seems 
 reliable without this, but 

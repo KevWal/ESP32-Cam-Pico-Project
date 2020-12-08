@@ -13,6 +13,21 @@ ESP32-CAM board does not include lora device or GPS device which need to be conn
 Program through the U0R and U0T pins (serial pins) with GPIO0 connected to Gnd
 Debugging output is also on the U0R and U0T pins.
 
+Launch
+------
+
+12.4g - Tracker inc 180deg Camera, guitar wire GPS & LoRa Aeril
+21g - 2 x AAA in holder with wire
+40g - 2 x AA in holder with wire
+14g - 450Ma LiPo
+
+LiPo Version, 26.5g total weight
+1 x Qualtex, 72Ltr Helium, 10g free lift, 0.120m3 unstretched volume, 6,400m burst, 1.7m/sec ascent, 60 mins to burst
+2 x Qualtex, 58Ltr Helium each, 10g free lift each, 0.120m3 unstretched volume, 8,400m burst, 1.9m/sec ascent, 75 mins to burst
+
+AA Version, 52.5g total weight
+1 x 100g Pawan, 200ltr Helium, 50g free lift, 20,325m burst, 2.9m/sec ascent, 117mins to burst
+
 
 PCB
 ---
@@ -161,6 +176,13 @@ Thinner middle pad for buck reg to allo different footprint
 
 Vsupply resister divider on another adc pin too, no solder jumper neeeded.
 
+Increase PCB string holes size, and 4 corner holes to allow vertical down suspension
+
+Lengthen PCB
+
+2 x AA battery holders?
+
+Different boost converter
 
 
 

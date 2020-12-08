@@ -15024,6 +15024,8 @@ ZH has 1.5mm spacing.&lt;p&gt;
 <part name="PAD5" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="SMD2" device="" package3d_urn="urn:adsk.eagle:package:30839/1"/>
 <part name="PAD6" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="SMD2" device="" package3d_urn="urn:adsk.eagle:package:30839/1"/>
 <part name="J4" library="kanflo" deviceset="JST_ZH_2PIN" device=""/>
+<part name="GND22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C13" library="SparkFun-Capacitors" deviceset="1.0UF" device="-0402-16V-10%" value="4.7uF"/>
 </parts>
 <sheets>
 <sheet>
@@ -15042,8 +15044,8 @@ ATGM336N
 <text x="175.26" y="53.34" size="1.6764" layer="91">Dorji DRF1278F
 1.8v to 3.6v</text>
 <text x="167.64" y="127" size="1.6764" layer="91">ESP32-CAM
-ESP32 down to 2.5v or lower
-Camera down to 2.7v for bigger pics </text>
+ESP32 down to 2.3v
+Camera down to 2.7v, 2.6v sometimes</text>
 <text x="88.9" y="142.24" size="3.81" layer="92" ratio="15">ESP32 Cam Pico Tracker</text>
 <text x="157.48" y="63.5" size="1.016" layer="91">Lora module reset seems 
 reliable without this, but 
@@ -15058,6 +15060,8 @@ use with 1 or 2 AA's?</text>
 <text x="160.02" y="91.44" size="1.016" layer="91">GPIO2 must be unconnected or
 driven low whilst programming</text>
 <text x="43.18" y="61.976" size="1.016" layer="91" rot="MR0">Solar Panel Cross Beam Mount option</text>
+<text x="68.58" y="5.08" size="1.6764" layer="91">Use C11 or C13 depending
+which side you put the JST.</text>
 </plain>
 <instances>
 <instance part="IC1" gate="G$1" x="160.02" y="121.92" smashed="yes"/>
@@ -15228,12 +15232,12 @@ driven low whilst programming</text>
 <instance part="LORA" gate="G$1" x="142.24" y="40.64" smashed="yes">
 <attribute name="NAME" x="144.78" y="41.021" size="1.778" layer="95" font="vector"/>
 </instance>
-<instance part="C12" gate="G$1" x="76.2" y="22.86" smashed="yes" rot="MR0">
-<attribute name="NAME" x="75.057" y="23.3426" size="1.778" layer="95" rot="MR0"/>
-<attribute name="VALUE" x="77.597" y="18.2626" size="1.778" layer="96" rot="MR0"/>
+<instance part="C12" gate="G$1" x="68.58" y="22.86" smashed="yes" rot="MR0">
+<attribute name="NAME" x="67.437" y="23.3426" size="1.778" layer="95" rot="MR0"/>
+<attribute name="VALUE" x="69.977" y="18.2626" size="1.778" layer="96" rot="MR0"/>
 </instance>
-<instance part="GND21" gate="1" x="76.2" y="12.7" smashed="yes" rot="MR0">
-<attribute name="VALUE" x="78.74" y="10.16" size="1.778" layer="96" rot="MR0"/>
+<instance part="GND21" gate="1" x="68.58" y="12.7" smashed="yes" rot="MR0">
+<attribute name="VALUE" x="71.12" y="10.16" size="1.778" layer="96" rot="MR0"/>
 </instance>
 <instance part="JP6" gate="G$1" x="10.16" y="20.32" smashed="yes" rot="R90">
 <attribute name="NAME" x="7.62" y="17.78" size="1.778" layer="95" font="vector" rot="R90"/>
@@ -15273,6 +15277,13 @@ driven low whilst programming</text>
 </instance>
 <instance part="J4" gate="G$1" x="50.8" y="43.18" smashed="yes" rot="MR90">
 <attribute name="NAME" x="57.181" y="40.545" size="1.905" layer="95" rot="MR90"/>
+</instance>
+<instance part="GND22" gate="1" x="76.2" y="12.7" smashed="yes" rot="MR0">
+<attribute name="VALUE" x="78.74" y="10.16" size="1.778" layer="96" rot="MR0"/>
+</instance>
+<instance part="C13" gate="G$1" x="76.2" y="20.32" smashed="yes" rot="MR0">
+<attribute name="NAME" x="74.676" y="23.241" size="1.778" layer="95" font="vector" rot="MR0"/>
+<attribute name="VALUE" x="77.216" y="18.161" size="1.778" layer="96" font="vector" rot="MR0"/>
 </instance>
 </instances>
 <busses>
@@ -15412,7 +15423,7 @@ driven low whilst programming</text>
 </segment>
 <segment>
 <pinref part="C12" gate="G$1" pin="-"/>
-<wire x1="76.2" y1="17.78" x2="76.2" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="68.58" y1="17.78" x2="68.58" y2="15.24" width="0.1524" layer="91"/>
 <pinref part="GND21" gate="1" pin="GND"/>
 </segment>
 <segment>
@@ -15440,6 +15451,11 @@ driven low whilst programming</text>
 <pinref part="J4" gate="G$1" pin="P$2"/>
 <wire x1="50.8" y1="25.4" x2="50.8" y2="20.32" width="0.1524" layer="91"/>
 <wire x1="50.8" y1="35.56" x2="50.8" y2="25.4" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C13" gate="G$1" pin="2"/>
+<pinref part="GND22" gate="1" pin="GND"/>
+<wire x1="76.2" y1="17.78" x2="76.2" y2="15.24" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -15730,7 +15746,8 @@ driven low whilst programming</text>
 <wire x1="83.82" y1="30.48" x2="76.2" y2="30.48" width="0.1524" layer="91"/>
 <junction x="83.82" y="30.48"/>
 <pinref part="C12" gate="G$1" pin="+"/>
-<wire x1="76.2" y1="30.48" x2="76.2" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="30.48" x2="68.58" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="68.58" y1="30.48" x2="68.58" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="IC2" gate="G$1" pin="VI1"/>
 <wire x1="83.82" y1="64.516" x2="81.28" y2="64.516" width="0.1524" layer="91"/>
 <wire x1="81.28" y1="64.516" x2="81.28" y2="56.896" width="0.1524" layer="91"/>
@@ -15742,6 +15759,9 @@ driven low whilst programming</text>
 <junction x="86.36" y="43.18"/>
 <pinref part="U1" gate="U1" pin="EN"/>
 <wire x1="91.44" y1="17.78" x2="91.44" y2="20.32" width="0.1524" layer="91"/>
+<pinref part="C13" gate="G$1" pin="1"/>
+<wire x1="76.2" y1="30.48" x2="76.2" y2="25.4" width="0.1524" layer="91"/>
+<junction x="76.2" y="30.48"/>
 </segment>
 <segment>
 <pinref part="GPS" gate="G$1" pin="1"/>

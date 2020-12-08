@@ -8,29 +8,29 @@
 */
 
 // Specify how many times we send each image packet.
-// High values take more time but less risk of missing packets
+// High values take more time to send an image but less risk of missing packets
 #define PACKETS 2
 
 // transmit a telemetry packet every X SSDV packets
-#define INTERLEAVE_TELEM            10
+#define INTERLEAVE_TELEM            8
 
 // Specify the power configuration
-// BUCK assumes that all components are powered by the buck regulator, and that a 3.2v lip cell or similar is used.
+// BUCK assumes that all components are powered by the buck regulator, and that a 3.2v lipo cell or similar is used.
 // BOOST assumes a 3.3v boost regulator powers the ESP32-CAM and the GPS module (DRF module ok down to 1.8v)
 // NONE assumes 2 x AAA batteries power all components, and the board uses a UBLOX MAX 8C GPS module (1.65v min)
-//#define BOOST
+#define BOOST
 //#define BUCK
-#define NONE
+//#define NONE
 
 #ifdef BOOST
-  #define CALLSIGN "KEW03"          // Set your balloon callsig, max 6 characters
-  long frq = 434900000;             // Transmit frequency
+  #define CALLSIGN "KEW02"          // Set your balloon callsig, max 6 characters
+  long frq = 434720000;             // Set transmit frequency, xx on my gateway
 #elif defined(BUCK)
-  #define CALLSIGN "KEW02"
-  long frq = 434800000;
+  #define CALLSIGN "KEW03"
+  long frq = 434730000;             //xx on my gateway
 #elif defined(NONE)
   #define CALLSIGN "KEW01"
-  long frq = 434700000;
+  long frq = 434710000;             // xx on my gateway
 #endif
 // IR2030/1/10 433.05-434.79 MHz 10 mW e.r.p. Duty cycle limit 10% or
 // IR2030/1/12 433.04-434.79 MHz 10 mW e.r.p. Channel Spacing <= 25 kHz
@@ -51,8 +51,8 @@
 #include "driver/adc.h"
 #include <esp_wifi.h>
 #include <esp_bt.h>
-#include "esp_pm.h"
-#include "soc/soc.h"
+//#include "esp_pm.h"
+//#include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 #include "esp.h"
 #include <esp_camera.h>
@@ -69,20 +69,20 @@ uint8_t temprature_sens_read();
 #include <ssdv.h>      // Install from https://github.com/fsphil/ssdv
 
 // Time
-#include <time.h>           // ESP32 native time library - graceful NTP server synchronization
-#include <lwip/apps/sntp.h> // ESP32 Lightweight IP SNTP client API
-#include <lwip/err.h>       // ESP32 Lightweight IP errors
+//#include <time.h>           // ESP32 native time library - graceful NTP server synchronization
+//#include <lwip/apps/sntp.h> // ESP32 Lightweight IP SNTP client API
+//#include <lwip/err.h>       // ESP32 Lightweight IP errors
 
 // MicroSD definitions
-#include <driver/sdmmc_host.h>
-#include <driver/sdmmc_defs.h>
-#include <sdmmc_cmd.h>
-#include <esp_vfs_fat.h>
+//#include <driver/sdmmc_host.h>
+//#include <driver/sdmmc_defs.h>
+//#include <sdmmc_cmd.h>
+//#include <esp_vfs_fat.h>
 
 #define SerialDebug Serial    // Nice names for Serial ports
 #define SerialGPS Serial2
 
-#include "ESP32-Cam-GPS.h" // Our GPS structure and routines
+#include "ESP32-Cam-GPS.h" // Our GPS data structure and GPS routines
 
 // The Preferences object, used to store things in EEPROM
 Preferences preferences;
@@ -115,21 +115,21 @@ unsigned int SSDV_quality;
 #define PCLK_GPIO_NUM     22 //
 
 // Global Variables
-long current_millis;
-long last_capture_millis = 0;
+//long current_millis;
+//long last_capture_millis = 0;
 static esp_err_t cam_err = -1;
 camera_config_t cam_config;
-bool internet_connected = false;
-struct tm timeinfo;
+//bool internet_connected = false;
+//struct tm timeinfo;
 uint8_t imgBuff[IMG_BUFF_SIZE];
 uint8_t loraBuff[LORA_BUFFER + 1];
 char gpsMessage[256];
-unsigned int imageID = 0;
+uint16_t imageID = 0;
 RTC_DATA_ATTR unsigned int gpsMessageCnt = 0; // GPS Message Number for HabHub Sentance ID, saved in memory that survives a deep sleep, but not a power cycle.
-unsigned int ssdvPacketCount = 0;
+uint16_t ssdvPacketCount = 0;
 
 // Time and SSDV objects
-time_t now;
+//time_t now;
 ssdv_t ssdv;
 
 int readV() {
@@ -148,9 +148,14 @@ int readV() {
 
   // analogRead() results vary depending on supply voltage source as GPIO15 has an internal pull up.
   // Divide by 1000 to allow integer maths
-#if defined(BOOST) || defined (BUCK)
+#if defined(BOOST)
   int Vcc = ((analogRead(LORA_CSS)*4908/1000)-4513); // tested with Supply of 2.3v to 4.8v with reg @3.3v.
-  //SerialDebug.println("  Regulator.");
+  //SerialDebug.println("  Boost Regulator.");
+#elif defined (BUCK)
+  int raw = analogRead(LORA_CSS);
+  int Vcc = (0.0035*raw*raw) - (6.0911*raw) + 5000; // tested with Supply of 2.3v to 5.0v with reg @3v.
+  // y = 0.0035*x*x - 6.0911*x + 5000
+  //SerialDebug.println("  Buck Regulator.");
 #elif defined(NONE)
   int Vcc = ((analogRead(LORA_CSS)*1744/1000)+566); // tested with Supply of 2.4v to 4.9v with no reg
   //SerialDebug.println("  No Regulator.");
@@ -309,7 +314,7 @@ void buildPITSMessage(){
   unsigned int CRC = 0xffff;           // Seed
   for (int i = 2; i < Count; i++){   
       CRC ^= (((unsigned int)gpsMessage[i]) << 8);
-      for (int j=0; j<8; j++) {
+      for (uint8_t j=0; j<8; j++) {
           if (CRC & 0x8000)
               CRC = (CRC << 1) ^ 0x1021; // xPolynomial
           else
@@ -401,25 +406,25 @@ void process_ssdv(camera_fb_t *fb){
         loraBuff[i] = loraBuff[i+1]; //KW TODO sort warning: iteration 255u invokes undefined behavior
       }
 
-      // Lora transmit image packet
-      SerialDebug.print("  Packet sending: ");
-      SerialDebug.println(ssdvPacketCount);
-      delay(10);
-      LoRa.beginPacket(1);          // initialise implicit mode and reset FIFO
-      LoRa.write(loraBuff, LORA_BUFFER);     // load data into FIFO
-      LoRa.endPacket();             // execute transmission return once complete
-      //delay(10); // Send packet twice
-      //LoRa.beginPacket(1);          // initialise implicit mode and reset FIFO
-      //LoRa.write(loraBuff, LORA_BUFFER);     // load data into FIFO
-      //LoRa.endPacket();             // execute transmission return once complete
+      // Send each packet multiple times
+      for(byte i = 0; i < PACKETS; i++) {
+        // Lora transmit image packet
+        SerialDebug.printf("  Packet sending: %d.\n", ssdvPacketCount);
+        delay(10);
+        LoRa.beginPacket(1);          // initialise implicit mode and reset FIFO
+        LoRa.write(loraBuff, LORA_BUFFER);     // load data into FIFO
+        LoRa.endPacket();             // execute transmission return once complete
+      }
       
-    } // if (cam_err == ESP_OK)
+    } else {// if (cam_err == ESP_OK)
+      delay(500); // dont go around the loop so quickly if we are not transmitting SSDV packets
+    }
 
     ssdvPacketCount++; // Increment ssdvPacketCount even if the camera is not ok, otherwise we wont hit INTERLEAVE_TELEM
 
-    if (ssdvPacketCount > 350) {
-      SerialDebug.println("  ERROR: ssdvPacketCount > 350");
-      break; // incase we get stuck in this loop, for example when the camera isnt on
+    if (ssdvPacketCount > 300) {
+      SerialDebug.println("  ERROR: ssdvPacketCount > 300");
+      break; // incase we get stuck in this loop, for example when the camera isn't on
     }
     
   } // while (1)
@@ -508,9 +513,9 @@ void send_photo() {
     SerialDebug.printf("System Voltage: %d.\n", readV());
     fb = esp_camera_fb_get(); // Get the current frame buffer
     SerialDebug.printf("System Voltage: %d.\n", readV());
-    delay(100);
-    //esp_camera_deinit(); // Tried to see if this would allow us to power down the camera and power it back up again, it doesnt.
-    //camera_disable_out_clock(); // Saves about 10ma if we didnt turn the camera off anyway
+    delay(10);
+    //esp_camera_deinit(); // Tried to see if this would allow us to power down the camera and power it back up again, it didn't.
+    //camera_disable_out_clock(); // Saves about 10ma if we didn't turn the camera off anyway
     digitalWrite(PWDN_GPIO_NUM, HIGH); // Turn the camera power off, now need to reboot before taking next picture
     setCpuFrequencyMhz(CORE_FREQ);  // Reduce CPU frequency back to energy saving
     SerialDebug.printf("  Picture length: %d\n", fb->len);
@@ -591,11 +596,11 @@ esp_err_t camera_init() {
     }
 
     setCpuFrequencyMhz(80); // Camera seems to need more than 40mhz  TODO more research on saving power here
-    delay(100);
+    delay(10);
     
     esp_err_t err = esp_camera_init(&cam_config);  //initialize the camera
 
-    delay(100);
+    delay(10);
     setCpuFrequencyMhz(CORE_FREQ);
 
     return err;
@@ -614,7 +619,7 @@ void setup() {
 
   //while (1) {
     SerialDebug.printf("System Voltage: %d.\n", readV());
-    //delay(1000);
+    delay(1000);
   //}
 
   // Help us to confirm we have the right config for the right board!
@@ -627,7 +632,7 @@ void setup() {
 #else
   SerialDebug.println("  ERROR: Incorrect regulator config");
   delay(30000);
-  ESP.restart(); // Should never get here
+  ESP.restart();
 #endif
 
 /*
@@ -664,7 +669,7 @@ void setup() {
   esp_bt_controller_disable();
   //adc_power_off(); // Need adc for reading Vcc
   
-  internet_connected = false;
+  //internet_connected = false;
 
   // Flash onboard red LED
   pinMode(33, OUTPUT);
@@ -725,8 +730,6 @@ void setup() {
   //KW TODO research void LoRa.setSPI(SPIClass& spi);
   //KW TODO research void LoRa.setSPIFrequency(uint32_t frequency);
 
-  SerialDebug.printf("System Voltage: %d.\n", readV());
-
   if(!LoRa.begin(frq)){
     SerialDebug.println("  ERROR: Lora not detected, going to reboot in 5 seconds.");
     delay(5000);
@@ -747,7 +750,7 @@ void setup() {
   
   // Get a GPS location
   SerialDebug.println("  Wait a while for a GPS Signal, check we get some GPS sentances.");
-  while (!GPS.isValid && (millis() <= 20000) ) {
+  while (!GPS.isValid && (millis() <= 15000) ) {
     checkGps();
     if (millis() % 3000 == 0) {
       SerialDebug.printf("  Sec: %d, Sats: %d, Sentences passed: %d, Sentences failed: %d\n", 
@@ -793,7 +796,7 @@ void setup() {
   }
 
   // Alternate between image sizes
-  if (imageID % 2 == 0) {
+  if (imageID % 3 == 0) {
     // Overide the above, https://github.com/espressif/esp32-camera/blob/master/driver/include/sensor.h
     cam_config.frame_size = FRAMESIZE_XGA; // QVGA = 320x240, VGA = 640x480, SVGA = 800x600 (Not div 16!), XGA = 1024x768, SXGA = 1280x1024, UXGA = 1600x1200
     cam_config.jpeg_quality = 10;  // Quality of JPEG output. 0-63, lower means higher quality. TODO Should we take the highest quality and let the SSDV encoder shrink it?
@@ -813,7 +816,7 @@ void setup() {
 #if defined(BOOST)
   if ((readV() > 2550 && cam_config.frame_size == FRAMESIZE_VGA) || (readV() > 2650)) { // ATGM with 2 x AA's and Boost regulator.
 #elif defined (BUCK)
-  if ((readV() > 2800 && cam_config.frame_size == FRAMESIZE_VGA) || (readV() > 3000)) { // 3.7v LiPo with Buck regulator (untested)
+  if ((readV() > 2800 && cam_config.frame_size == FRAMESIZE_VGA) || (readV() > 3300)) { // 3.7v LiPo with Buck regulator
 #elif defined (NONE)
   if ((readV() > 2550 && cam_config.frame_size == FRAMESIZE_VGA) || (readV() > 2750)) { // Max M8C with 2 x AA's and no Boost regulator
 #endif
@@ -868,9 +871,9 @@ void loop()
   // Dont reboot if below a certain voltage as we wont make it back (Brownout WDT kicks in before we can turn it off and we reboot loop).  
   // ESP32 module will run to about 2.15v if not rebooted
 #if defined (BUCK) // If 3.7v LiPo dont reboot below this voltage
-  if (readV() > 2750) {
+  if (readV() > 2700) {
 #else
-  if (readV() > 2500) { // If 2 x AA dont reboot below this voltage
+  if (readV() > 2500) { // If 2 x AA / AAA dont reboot below this voltage
 #endif
     periph_module_reset(PERIPH_I2C0_MODULE);
     esp_sleep_enable_timer_wakeup(15 * 1000000l); // 1000000 us per Second
