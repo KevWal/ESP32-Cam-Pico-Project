@@ -15,11 +15,11 @@
 #define INTERLEAVE_TELEM            8
 
 // Specify the power configuration
-// BUCK assumes that all components are powered by the buck regulator, and that a 3.2v lipo cell or similar is used.
+// BUCK assumes that all components are powered by the buck regulator, and that a 3.2v lipo cell or 3 x AAA's are used.
 // BOOST assumes a 3.3v boost regulator powers the ESP32-CAM and the GPS module (DRF module ok down to 1.8v)
 // NONE assumes 2 x AAA batteries power all components, and the board uses a UBLOX MAX 8C GPS module (1.65v min)
-#define BOOST
-//#define BUCK
+//#define BOOST
+#define BUCK
 //#define NONE
 
 #ifdef BOOST

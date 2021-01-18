@@ -17,6 +17,7 @@ Launch
 ------
 
 12.4g - Tracker inc 180deg Camera, guitar wire GPS & LoRa Aeril
+25g - 3 x AAA soldered together with wire - lasted 14 hours in freezer
 21g - 2 x AAA in holder with wire
 40g - 2 x AA in holder with wire
 14g - 450Ma LiPo
@@ -27,6 +28,12 @@ LiPo Version, 26.5g total weight
 
 AA Version, 52.5g total weight
 1 x 100g Pawan, 200ltr Helium, 50g free lift, 20,325m burst, 2.9m/sec ascent, 117mins to burst
+
+AAA Version, 12.5g + 25g = 38g total weight
+1 x Qualtex, 70Ltr Helium, 10g free lift, 0.120m3 unstretched volume, 4,900m burst, 1.7m/sec ascent, 48 mins to burst
+2 x Qualtex, 62Ltr Helium each, 10g free lift each, 0.120m3 unstretched volume, 7,500m burst, 1.9m/sec ascent, 65 mins to burst
+2 x Chineese, 58Ltr Helium each, 6g free lift each, 0.120m3 unstretched volume, 7,640m burst, 1.9m/sec ascent, 65 mins to float!
+
 
 
 PCB
@@ -52,28 +59,29 @@ Cameras
 -------
 Tested with various view angle versions of the OV2640.  Some research on other options below.
 
-
-OV2640 - 1/4" color CMOS UXGA 2 megapixel image sensor
+OV2640 - 1/4" color CMOS UXGA (1600x1200) 2 megapixel image sensor
+Used XGA = 1024x768 or VGA = 640x480
 https://www.uctronics.com/download/cam_module/OV2640DS.pdf
 
 OV3660 - 3 megapixels
-Supports up to FRAMESIZE_QXGA
+Supports up to FRAMESIZE_QXGA (2048x1536)
+https://github.com/espressif/esp32-camera/files/3783752/OV3660_CSP3_DS_1.3_sida.pdf
 
 OV5640 - 1/4" color CMOS QSXGA 5 megapixel image sensor
+Supports up to FRAMESIZE_QSXGA (2560x1920)
 https://www.uctronics.com/download/Image_Sensor/OV5640_CSP3_DS.pdf
 
 OV7670 - 0.3Mp
 Not reasearched due only 0.3Mp!
 
 OV7725 - 
-Supports up to FRAMESIZE_VGA
+Supports up to FRAMESIZE_VGA (640x480), doesnt support JPEG
 
-OV9650 -
-1.3Mp
+OV9650 - Not supported in main repo.
 https://www.uctronics.com/index.php/ov9650-13-mega-pixels-camera-module-p-817l.html
 
 NT99141
-Supports QVGA (320x240), VGA(640x480) and HD (1280x720)
+Supports QVGA (320x240 xskip or crop), VGA(640x480 xskip or crop) and HD (1280x720)
 
 
 https://github.com/espressif/esp32-camera/tree/master/sensors
