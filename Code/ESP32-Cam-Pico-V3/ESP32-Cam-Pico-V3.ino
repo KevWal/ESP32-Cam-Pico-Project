@@ -27,13 +27,14 @@
   long frq = 434720000;             // Set transmit frequency, xx on my gateway
 #elif defined(BUCK)
   #define CALLSIGN "KEW03"
-  long frq = 434730000;             //xx on my gateway
+  long frq = 434730000;             //434.738,0 on my gateway
 #elif defined(NONE)
   #define CALLSIGN "KEW01"
   long frq = 434710000;             // xx on my gateway
 #endif
 // IR2030/1/10 433.05-434.79 MHz 10 mW e.r.p. Duty cycle limit 10% or
 // IR2030/1/12 433.04-434.79 MHz 10 mW e.r.p. Channel Spacing <= 25 kHz
+// 434.5 to 435 is Scandanavia repeater output
 
 //================================================================================
 

@@ -32,7 +32,8 @@ AA Version, 52.5g total weight
 AAA Version, 12.5g + 25g = 38g total weight
 1 x Qualtex, 70Ltr Helium, 10g free lift, 0.120m3 unstretched volume, 4,900m burst, 1.7m/sec ascent, 48 mins to burst
 2 x Qualtex, 62Ltr Helium each, 10g free lift each, 0.120m3 unstretched volume, 7,500m burst, 1.9m/sec ascent, 65 mins to burst
-2 x Chineese, 58Ltr Helium each, 6g free lift each, 0.120m3 unstretched volume, 7,640m burst, 1.9m/sec ascent, 65 mins to float!
+
+2 x Chineese, 58Ltr Helium each, 6g free lift each, 0.120m3 unstretched volume, 7,640m burst, 1.9m/sec ascent, 65 mins to float!  42g / 2 = 21g each + 6g = 27g each
 
 
 
@@ -174,6 +175,8 @@ Add use of HabPack binary protocol
 
 Report gps signal quality?
 	Base on https://github.com/mikalhart/TinyGPSPlus/blob/master/examples/SatelliteTracker/SatelliteTracker.ino
+
+Record Voltage when taking a picture and send it next telem packet.
 
 
 PCB
