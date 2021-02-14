@@ -4,19 +4,18 @@ Written to run on ESP32-Cam board + Lora + GPS
 Original code by mkshrps - https://github.com/mkshrps/espcam
 Some other ideas from Stuart - https://stuartsprojects.github.io/2020/08/27/ESP32CAM-TrackerAddOn-Board.html
 
-1. Transmits jpg data over lora using SSDV protocol
-2. Interleaves GPS UKHAS protocol tracking data packets 
-3. Compatible with PITS Gateway receiver
+1. Transmits jpg data over lora using SSDV protocol;
+2. Interleaves GPS using UKHAS protocol packets;
+3. Compatible with PITS LoRa-Gateway receiver.
 
 ESP32-CAM board does not include lora device or GPS device which need to be connected.
 
-Program through the U0R and U0T pins (serial pins) with GPIO0 connected to Gnd
+Program through the U0R and U0T pins (serial pins) with GPIO0 connected to Gnd.
 Debugging output is also on the U0R and U0T pins.
 
-Launch
+Weights
 ------
-
-12.4g - Tracker inc 180deg Camera, guitar wire GPS & LoRa Aeril
+12.4g - Tracker inc 180deg Camera, guitar wire GPS & LoRa Aerial
 25g - 3 x AAA soldered together with wire - lasted 14 hours in freezer
 21g - 2 x AAA in holder with wire
 40g - 2 x AA in holder with wire
@@ -35,12 +34,15 @@ AAA Version, 12.5g + 25g = 38g total weight
 
 2 x Chineese, 58Ltr Helium each, 6g free lift each, 0.120m3 unstretched volume, 7,640m burst, 1.9m/sec ascent, 65 mins to float!  42g / 2 = 21g each + 6g = 27g each
 
+Buck version intended for LiPo but used for 3 x AAA
 
 
 PCB
 ---
 
 The PCB is designed with many options, mainly around power.  The board is designed to be powered by 2 x AAA or a 3.7v Lipo.  With 2 x AAA I found it needs a boost converter if using the ATGM GPS.  With 1 3.7v Lipo I recomend using the buck convertor.  You could use the 3.3v limiting effect of the Boost regulator, but as it is a charge doubler style is uses double the required current from the battery.
+
+Flying showed 3 x AAA with a buck convertor best.
 
 
 GPS
@@ -52,13 +54,15 @@ Lora
 ----
 PCB is based on a Dorji DRF1278F LORA module.
 
-Code hould support any of the LORA modules listed here:
+Code should support any of the LORA modules listed here:
 https://github.com/sandeepmistry/arduino-LoRa
 
 
 Cameras
 -------
-Tested with various view angle versions of the OV2640.  Some research on other options below.
+Tested with various view angle versions of the OV2640.  This is the standard ESP32 camera.
+
+Some research on other options below.
 
 OV2640 - 1/4" color CMOS UXGA (1600x1200) 2 megapixel image sensor
 Used XGA = 1024x768 or VGA = 640x480
@@ -110,7 +114,7 @@ https://docs.ai-thinker.com/_media/esp32/docs/esp32_cam_sch.pdf
 https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf
 https://github.com/espressif/esptool/wiki/ESP32-Boot-Mode-Selection
 
-GPIO32 controls camera power, but if you power the camera down I cant seem to re-initialise it without a reboot (which is now done through a deep sleep)
+GPIO32 controls camera power, but if you power the camera down I cant seem to re-initialise it without a reboot (which is now done through a deep sleep reboot)
 
 
 Arduino IDE
@@ -131,9 +135,10 @@ Code setup for:
 = Dave Akerman PITS mode 1
 https://github.com/PiInTheSky/lora-gateway
 
+
 Power Consumption
 ------------------
-ESP32 Cam module, regulator removed and flash LED transistor removed
+ESP32 Cam module with regulator removed and flash LED transistor removed
 	44ma - Default frequency
 	14ma - Reduce to 20Mhz
 	14ma - Turn off BT & WIFI
@@ -143,11 +148,11 @@ ESP32 Cam module, regulator removed and flash LED transistor removed
 	15ma - Turn off camera
 	
 Board Power Consumption by Frequency, with Lora, GPS and Camera attached but not initialised
-160Mhz, 55ma, 80Mhz, 48ma
-40Mhz, 38ma, 30Mhz, 38ma
-20Mhz, 36ma, 10Mhz, 35ma
-8Mhz, 34ma, 4Mhz, 34ma
-2Mhz, 34ma, 1Mhz, 34ma
+	160Mhz, 55ma, 80Mhz, 48ma
+	40Mhz, 38ma, 30Mhz, 38ma
+	20Mhz, 36ma, 10Mhz, 35ma
+	8Mhz, 34ma, 4Mhz, 34ma
+	2Mhz, 34ma, 1Mhz, 34ma
 
 
 ToDo
@@ -183,7 +188,7 @@ PCB
 ---
 Move reset switch hole to be slightly more aligned
 
-Thinner middle pad for buck reg to allo different footprint
+Thinner middle pad for buck reg to allow different footprint
 
 Vsupply resister divider on another adc pin too, no solder jumper neeeded.
 
@@ -191,9 +196,7 @@ Increase PCB string holes size, and 4 corner holes to allow vertical down suspen
 
 Lengthen PCB
 
-2 x AA battery holders?
-
-Different boost converter
+Different boost converter - current uses lots of current and can't supply enough output current when batteries weak.
 
 
 
