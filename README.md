@@ -40,9 +40,9 @@ Buck version intended for LiPo but used for 3 x AAA
 PCB
 ---
 
-The PCB is designed with many options, mainly around power.  The board is designed to be powered by 2 x AAA or a 3.7v Lipo.  With 2 x AAA I found it needs a boost converter if using the ATGM GPS.  With 1 3.7v Lipo I recomend using the buck convertor.  You could use the 3.3v limiting effect of the Boost regulator, but as it is a charge doubler style is uses double the required current from the battery.
+The PCB is designed with many options, mainly around power.  The board is designed to be powered by 2 x AAA or a 3.7v Lipo.  With 2 x AAA I found it needs a boost converter if using the ATGM GPS.  With 1 x 3.7v Lipo I recomend using the buck convertor.  You could use the 3.3v limiting effect of the Boost regulator, but as it is a charge doubler style is uses more current from the battery.
 
-Flying showed 3 x AAA with a buck convertor best.
+*Flying showed 3 x AAA with a buck convertor is a good option.*
 
 
 GPS
