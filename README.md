@@ -123,6 +123,28 @@ I added a custom board definition for esp32camkw.upload.speed=921600 to speed up
 C:\Users\WALTONK\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.4
 
 
+Simple Build Notes  - 3 x AA/AAA option
+---------------------------------------
+Batteries - 3 x AA/AAA = 4.8v down to 2.4v
+
+Reg - MCP170333MB SOT89 or similar
+Reg - Add C8, C10, C11 & C12 capacitors
+
+GPS - Tested with ATGM or UBlox Max 3.3v GPS chips
+GPS - Add GPS Ferrites and capacitors
+
+Tx - Add Dorji DRF1278F module
+Tx - Add R1, C7, C3 and C6
+Tx - Set jumper to 3.3v
+
+ESP32 - Add C2, C5, R5 & R6
+ESP32 - Remove ESP32 Regulator and Flash transistor
+ESP32 - Add ESP32 Camera module to PCB
+
+GPS Antenna - Add chip antenna or 46mm wire (total length)
+LoRa Antenna - Add 185mm wire (total length)
+
+
 Lora Mode
 ---------
 Code setup for:
