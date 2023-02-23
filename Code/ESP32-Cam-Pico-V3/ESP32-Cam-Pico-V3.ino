@@ -65,8 +65,8 @@ void camera_disable_out_clock();
 uint8_t temprature_sens_read();
 }
 
-#include <LoRa.h>      // Install from https://github.com/sandeepmistry/arduino-LoRa
-#include <TinyGPS++.h> // Install from http://arduiniana.org/libraries/tinygpsplus/
+#include <LoRa.h>      // Install from https://github.com/sandeepmistry/arduino-LoRa or "LoRa" by Sandeep Mistry in Library Manager
+#include <TinyGPS++.h> // Install from http://arduiniana.org/libraries/tinygpsplus/ or TinyGPSPlus by Mikal Hart in Library Manager
 #include <ssdv.h>      // Install from https://github.com/fsphil/ssdv
 
 // Time
@@ -119,7 +119,7 @@ unsigned int SSDV_quality;
 //long current_millis;
 //long last_capture_millis = 0;
 static esp_err_t cam_err = -1;
-camera_config_t cam_config;
+camera_config_t my_cam_config;
 //bool internet_connected = false;
 //struct tm timeinfo;
 uint8_t imgBuff[IMG_BUFF_SIZE];
@@ -134,19 +134,9 @@ uint16_t ssdvPacketCount = 0;
 ssdv_t ssdv;
 
 int readV() {
-  //return analogReadMilliVolts(15) <- this one uses the calibration but is not in current release
+  int Vcc = analogReadMilliVolts(LORA_CSS)*2115/1000-540; // This one uses the calibration but was not in previous release
 
-  // analogRead() calls
-  //  adcAttachPin(pin)
-  //    pinMode(pin, ANALOG);
-  //    __analogSetAttenuation(__analogAttenuation);  __analogAttenuation = 3;//11db
-  //    __analogSetCycles(__analogCycles);  __analogCycles = 8;
-  //    __analogSetSamples(__analogSamples + 1);//in samples  __analogSamples = 0;//1 sample
-  //    __analogSetClockDiv(__analogClockDiv);  __analogClockDiv = 1;
-  //    __analogSetWidth(__analogWidth + 9);//in bits  __analogWidth = 3;//12 bits
-  //  adcStart(pin)
-  //  __adcEnd(pin);
-
+ /*  If you dont have analogReadMilliVolts use the below
   // analogRead() results vary depending on supply voltage source as GPIO15 has an internal pull up.
   // Divide by 1000 to allow integer maths
 #if defined(BOOST)
@@ -161,7 +151,8 @@ int readV() {
   int Vcc = ((analogRead(LORA_CSS)*1744/1000)+566); // tested with Supply of 2.4v to 4.9v with no reg
   //SerialDebug.println("  No Regulator.");
 #endif
- 
+ */
+
   pinMode(LORA_CSS, OUTPUT); // Set pin back to an output for SPI / Lora
  
   return Vcc;
@@ -197,45 +188,6 @@ void checkGps(){
     }
   }
 
-/*
-  //if(gps.location.isUpdated()){
-    if (gps.location.isValid()){
-      GPS.Longitude = (float) gps.location.lng();
-      GPS.Latitude = (float) gps.location.lat();
-    }
-    if (gps.altitude.isValid()){
-      GPS.Altitude = (long) gps.altitude.meters();
-    }
-    if(gps.time.isValid() && gps.time.isUpdated()){
-      GPS.Hours = (uint8_t) gps.time.hour();
-      GPS.Minutes = (uint8_t) gps.time.minute();
-      GPS.Seconds = (uint8_t) gps.time.second();
-    }
-    // if gps data is all ready
-    if (gps.location.isValid() && gps.altitude.isValid() && gps.time.isValid() ){
-      GPS.isValid = true;
-      SerialDebug.println("  GPS location, altitude and time valid.");
-    } else {
-      SerialDebug.println("  Error: GPS location updated, but GPS location, altitude and time not yet valid.");
-    }
-*/
-
-    /*
-    if(GPS.isValid ){
-      // get course and distance if we have a remote tracker
-
-      GPS.courseTo = gps.courseTo(GPS.Latitude,GPS.Longitude,remote_data.latitude,remote_data.longitude);
-      GPS.distancem = gps.distanceBetween(GPS.Latitude,GPS.Longitude,remote_data.latitude,remote_data.longitude);
-      remote_data.cardinalCourseTo = gps.cardinal(remote_data.courseTo);
-    }
-    */
-
-  //} // if(gps.location.isUpdated())
-  
-  //GPS.Satellites = (unsigned int) gps.satellites.value();
-  //GPS.failedCS = (unsigned int) gps.failedChecksum();
-  
-  //SerialDebug.printf("  Sats: %d, Sentences passed: %d, Sentences failed: %d\n", gps.satellites.value(), gps.passedChecksum(), gps.failedChecksum);
 }
 
 
@@ -496,20 +448,10 @@ void send_photo() {
   SerialDebug.println("send_photo()");
   camera_fb_t *fb; // Declare the variable for the pointer to the framebuffer
 
-/*
-  if (readV() < 2600) { 
-    cam_err = -1; // If voltage goes below this then dont take / send pictures
-    digitalWrite(PWDN_GPIO_NUM, HIGH); // Turn the camera power off
-    SerialDebug.printf("  ERROR: Voltage %d too low, not taking pictures\n", readV());
-  } else {
-    SerialDebug.printf("  Voltage %d ok\n", readV());
-  }
-*/
-
   if (cam_err == ESP_OK) {  // If the camera is ok
     SerialDebug.printf("  Taking picture: %d\n", imageID);
     setCpuFrequencyMhz(80); // Camera seems to need more than 40mhz to get a picture  TODO more research on lowering power here
-    camera_enable_out_clock(&cam_config); // TODO Check result from this
+    camera_enable_out_clock(&my_cam_config); // TODO Check result from this
     delay(1500);
     SerialDebug.printf("System Voltage: %d.\n", readV());
     fb = esp_camera_fb_get(); // Get the current frame buffer
@@ -523,7 +465,7 @@ void send_photo() {
     process_ssdv(fb);  // Main routine
     esp_camera_fb_return(fb);
   } else {
-    SerialDebug.printf("  Camera Not Ok, but running process_ssdv anyway to send telemetry.\n");
+    SerialDebug.printf("WARNING: Camera Not Ok, but running process_ssdv anyway to send telemetry.\n");
     fb = 0;
     process_ssdv(fb);  // Main routine, run even if we dont have a picture as this is where we send location too.
   }
@@ -599,7 +541,7 @@ esp_err_t camera_init() {
     setCpuFrequencyMhz(80); // Camera seems to need more than 40mhz  TODO more research on saving power here
     delay(10);
     
-    esp_err_t err = esp_camera_init(&cam_config);  //initialize the camera
+    esp_err_t err = esp_camera_init(&my_cam_config);  //initialize the camera
 
     delay(10);
     setCpuFrequencyMhz(CORE_FREQ);
@@ -614,6 +556,8 @@ void setup() {
 
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
   
+  setCpuFrequencyMhz(CORE_FREQ); //reduce from 160 to save power
+  
   SerialDebug.begin(115200);
   SerialDebug.println("\r\nsetup()");
   SerialDebug.flush();
@@ -625,13 +569,13 @@ void setup() {
 
   // Help us to confirm we have the right config for the right board!
 #if defined(BOOST)
-  SerialDebug.println("  Boost Regulator.");
+  SerialDebug.println("  Boost Regulator."); SerialDebug.flush();
 #elif defined (BUCK)
-  SerialDebug.println("  Buck Regulator.");
+  SerialDebug.println("  Buck Regulator."); SerialDebug.flush();
 #elif defined(NONE)
-  SerialDebug.println("  No Regulator.");
+  SerialDebug.println("  No Regulator."); SerialDebug.flush();
 #else
-  SerialDebug.println("  ERROR: Incorrect regulator config");
+  SerialDebug.println("  ERROR: Incorrect regulator config"); SerialDebug.flush();
   delay(30000);
   ESP.restart();
 #endif
@@ -645,11 +589,9 @@ void setup() {
     delay(5000);
   }
 */
-  SerialDebug.println("Reduce frequency to CORE_FREQ to save power.");
-  setCpuFrequencyMhz(CORE_FREQ); //reduce from 160 to save power
-
+  
   // GPIO4 is the Flash LED, make sure it is off
-  // Flash LED Transistor now removed
+  // Flash LED Transistor now removed as GPIO used for GPS_TXD
   // pinMode(4, OUTPUT);
   // digitalWrite(4, LOW);
 
@@ -661,12 +603,12 @@ void setup() {
   //ESP_ERROR_CHECK( esp_pm_configure(&pm_config) );
 
   // Turn off adc, wifi and Bluetooth for flight mode
-  SerialDebug.println("Turn off WIFI and BT.");
+  SerialDebug.println("Turning off WIFI and BT."); SerialDebug.flush();
   WiFi.mode(WIFI_OFF);
   btStop();
 
   // Recomended additional power savings
-  //esp_wifi_stop(); // Caused a panic for me
+  esp_wifi_stop(); // May caused a panic, comment out if it does
   esp_bt_controller_disable();
   //adc_power_off(); // Need adc for reading Vcc
   
@@ -732,13 +674,13 @@ void setup() {
   //KW TODO research void LoRa.setSPIFrequency(uint32_t frequency);
 
   if(!LoRa.begin(frq)){
-    SerialDebug.println("  ERROR: Lora not detected, going to reboot in 5 seconds.");
+    SerialDebug.println("ERROR: LoRa module not detected, going to reboot in 5 seconds.");
     delay(5000);
     preferences.end();
     ESP.restart(); // If we can't transmit at least our position, no point carrying on.
   }
   else {
-    SerialDebug.println("  Lora detected OK");
+    SerialDebug.println("LoRa module detected OK");
     LoRa.setSpreadingFactor(6);
     LoRa.setSignalBandwidth(20.8E3);
     LoRa.setCodingRate4(5);
@@ -750,91 +692,97 @@ void setup() {
   SerialDebug.printf("System Voltage: %d.\n", readV());
   
   // Get a GPS location
-  SerialDebug.println("  Wait a while for a GPS Signal, check we get some GPS sentances.");
-  while (!GPS.isValid && (millis() <= 15000) ) {
+  SerialDebug.println("Wait a while for a GPS Signal, check we get some GPS sentances.");
+  while (!GPS.isValid && (millis() <= 20000) ) {
     checkGps();
-    if (millis() % 3000 == 0) {
-      SerialDebug.printf("  Sec: %d, Sats: %d, Sentences passed: %d, Sentences failed: %d\n", 
+    if (millis() % 5000 == 0) {
+      SerialDebug.printf("  Second: %d, Sats: %d, Sentences passed: %d, Sentences failed: %d\n", 
                       (int)millis()/1000, gps.satellites.value(), gps.passedChecksum(), gps.failedChecksum());
       delay(5);
     }
   }
-  if (GPS.isValid) SerialDebug.printf("  Initial GPS Signal valid.\n  Sats: %d, Sentences passed: %d, Sentences failed: %d\n", 
+  if (GPS.isValid) {
+    SerialDebug.printf("  Initial GPS Signal valid.\n  Sats: %d, Sentences passed: %d, Sentences failed: %d\n\n", 
                         gps.satellites.value(), gps.passedChecksum(), gps.failedChecksum());
+  } else {
+    SerialDebug.printf("  WARNING: No Initial GPS Signal.\n  Sats: %d, Sentences passed: %d, Sentences failed: %d\n\n", 
+                        gps.satellites.value(), gps.passedChecksum(), gps.failedChecksum());
+  }
 
   // Setup config structure for camera
-  cam_config.ledc_channel = LEDC_CHANNEL_0;
-  cam_config.ledc_timer = LEDC_TIMER_0;
-  cam_config.pin_d0 = Y2_GPIO_NUM;
-  cam_config.pin_d1 = Y3_GPIO_NUM;
-  cam_config.pin_d2 = Y4_GPIO_NUM;
-  cam_config.pin_d3 = Y5_GPIO_NUM;
-  cam_config.pin_d4 = Y6_GPIO_NUM;
-  cam_config.pin_d5 = Y7_GPIO_NUM;
-  cam_config.pin_d6 = Y8_GPIO_NUM;
-  cam_config.pin_d7 = Y9_GPIO_NUM;
-  cam_config.pin_xclk = XCLK_GPIO_NUM;
-  cam_config.pin_pclk = PCLK_GPIO_NUM;
-  cam_config.pin_vsync = VSYNC_GPIO_NUM;
-  cam_config.pin_href = HREF_GPIO_NUM;
-  cam_config.pin_sscb_sda = SIOD_GPIO_NUM;
-  cam_config.pin_sscb_scl = SIOC_GPIO_NUM;
-  cam_config.pin_pwdn = PWDN_GPIO_NUM;
-  cam_config.pin_reset = RESET_GPIO_NUM;
-  cam_config.xclk_freq_hz = 20000000;  // TODO can we reduce this to save power? Default 20000000
-  cam_config.pixel_format = PIXFORMAT_JPEG;
+  my_cam_config.ledc_channel = LEDC_CHANNEL_0;
+  my_cam_config.ledc_timer = LEDC_TIMER_0;
+  my_cam_config.pin_d0 = Y2_GPIO_NUM;
+  my_cam_config.pin_d1 = Y3_GPIO_NUM;
+  my_cam_config.pin_d2 = Y4_GPIO_NUM;
+  my_cam_config.pin_d3 = Y5_GPIO_NUM;
+  my_cam_config.pin_d4 = Y6_GPIO_NUM;
+  my_cam_config.pin_d5 = Y7_GPIO_NUM;
+  my_cam_config.pin_d6 = Y8_GPIO_NUM;
+  my_cam_config.pin_d7 = Y9_GPIO_NUM;
+  my_cam_config.pin_xclk = XCLK_GPIO_NUM;
+  my_cam_config.pin_pclk = PCLK_GPIO_NUM;
+  my_cam_config.pin_vsync = VSYNC_GPIO_NUM;
+  my_cam_config.pin_href = HREF_GPIO_NUM;
+  my_cam_config.pin_sscb_sda = SIOD_GPIO_NUM;
+  my_cam_config.pin_sscb_scl = SIOC_GPIO_NUM;
+  my_cam_config.pin_pwdn = PWDN_GPIO_NUM;
+  my_cam_config.pin_reset = RESET_GPIO_NUM;
+  my_cam_config.xclk_freq_hz = 20000000;  // TODO can we reduce this to save power? Default 20000000
+  my_cam_config.pixel_format = PIXFORMAT_JPEG;
+ 
   //init with high specs to pre-allocate larger buffers
   if (psramFound()) {
-    SerialDebug.println("  PS RAM Found.");
-    cam_config.frame_size = FRAMESIZE_UXGA;
-    cam_config.jpeg_quality = 10;
-    cam_config.fb_count = 2;
+    SerialDebug.println("PS RAM Found.");
+    my_cam_config.frame_size = FRAMESIZE_UXGA;
+    my_cam_config.jpeg_quality = 10;
+    my_cam_config.fb_count = 2;
   } else {
-    SerialDebug.println("  Error: PS RAM Not Found.");
-    cam_config.frame_size = FRAMESIZE_SVGA;
-    cam_config.jpeg_quality = 12;
-    cam_config.fb_count = 1;
+    SerialDebug.println("WARNING: PS RAM Not Found.");
+    my_cam_config.frame_size = FRAMESIZE_SVGA;
+    my_cam_config.jpeg_quality = 12;
+    my_cam_config.fb_count = 1;
   }
 
   // Alternate between image sizes
   if (imageID % 3 == 0) {
     // Overide the above, https://github.com/espressif/esp32-camera/blob/master/driver/include/sensor.h
-    cam_config.frame_size = FRAMESIZE_XGA; // QVGA = 320x240, VGA = 640x480, SVGA = 800x600 (Not div 16!), XGA = 1024x768, SXGA = 1280x1024, UXGA = 1600x1200
-    cam_config.jpeg_quality = 10;  // Quality of JPEG output. 0-63, lower means higher quality. TODO Should we take the highest quality and let the SSDV encoder shrink it?
-    cam_config.fb_count = 1; // If more than one, i2s runs in continuous mode. Use only with JPEG
+    my_cam_config.frame_size = FRAMESIZE_XGA; // QVGA = 320x240, VGA = 640x480, SVGA = 800x600 (Not div 16!), XGA = 1024x768, SXGA = 1280x1024, UXGA = 1600x1200
+    my_cam_config.jpeg_quality = 10;  // Quality of JPEG output. 0-63, lower means higher quality. TODO Should we take the highest quality and let the SSDV encoder shrink it?
+    my_cam_config.fb_count = 1; // If more than one, i2s runs in continuous mode. Use only with JPEG
     SSDV_quality = 3;     // 0-7 corresponding to JPEG quality: 13, 18, 29, 43, 50, 71, 86 and 100.  
                           // Default 4, Above 4 the improvements were not detectable 
                          // http://tt7hab.blogspot.com/2017/03/ssdv-slow-scan-digital-video.html
   } else {
-    cam_config.frame_size = FRAMESIZE_VGA;
-    cam_config.jpeg_quality = 10;
-    cam_config.fb_count = 1;
+    my_cam_config.frame_size = FRAMESIZE_VGA;
+    my_cam_config.jpeg_quality = 10;
+    my_cam_config.fb_count = 1;
     SSDV_quality = 4;  // Slightly higher quality for smaller VGA images
   }
 
   // XGA picture needs 2.75v to take without colour errors
   // ATGM GPS needs at least 2.7v to reliably start
 #if defined(BOOST)
-  if ((readV() > 2550 && cam_config.frame_size == FRAMESIZE_VGA) || (readV() > 2650)) { // ATGM with 2 x AA's and Boost regulator.
+  if (readV() > 2650) { // Boost regulator with 2 x AA's
 #elif defined (BUCK)
-  if ((readV() > 2800 && cam_config.frame_size == FRAMESIZE_VGA) || (readV() > 3300)) { // 3.7v LiPo with Buck regulator
+  if (readV() > 3000) { // Buck regulator with 3 x AA's 
 #elif defined (NONE)
-  if ((readV() > 2550 && cam_config.frame_size == FRAMESIZE_VGA) || (readV() > 2750)) { // Max M8C with 2 x AA's and no Boost regulator
+  if (readV() > 2750) { // No reg with 2 x AA's
 #endif
     cam_err = camera_init(); // If this fails, we seem to jump straight to main().
     if (cam_err != ESP_OK) {
-      SerialDebug.printf("  ERROR: Camera init failed with error 0x%x\n", cam_err);
+      SerialDebug.printf("ERROR: Camera init failed with error 0x%x\n", cam_err);
       digitalWrite(PWDN_GPIO_NUM, HIGH); // might as well turn camera of
     } else {
-      SerialDebug.println("  Camera init OK.");
+      SerialDebug.println("Camera initialised OK.");
       //esp_camera_deinit(); // TODO try this before power down, see if it means we can re init?
       //digitalWrite(PWDN_GPIO_NUM, HIGH); // Turn the camera power off // Cant do this as it wont re initialise
       camera_disable_out_clock(); // Save power by pausing camera.  Saves ~10ma
     }
   } else {
-    SerialDebug.printf("  ERROR: Vcc not high enough for picture size, not starting camera\n");
+    SerialDebug.printf("ERROR: Vcc not high enough for picture size, not starting camera\n");
     cam_err = -1;
-    digitalWrite(PWDN_GPIO_NUM, HIGH); // Turn camera of
+    digitalWrite(PWDN_GPIO_NUM, HIGH); // Turn camera off
   }
 
 /*  We can't currently have the SD Card and the Lora module active without another pin for Lora SS
@@ -862,7 +810,7 @@ void loop()
 
   // Needed as if camera init fails in setup() we skip straight to loop()
   if (cam_err != ESP_OK) {
-    SerialDebug.printf("  ERROR: Camera init failed with error 0x%x\n", cam_err);
+    SerialDebug.printf("ERROR: Camera init failed with error 0x%x\n", cam_err);
     digitalWrite(PWDN_GPIO_NUM, HIGH); // turn camera of!
   }
 
@@ -871,7 +819,7 @@ void loop()
   // Deep Sleep reset here to reset camera.  Allows us to turn the camera off as soon as we take a picture and then reboot to reinitialise it.
   // Dont reboot if below a certain voltage as we wont make it back (Brownout WDT kicks in before we can turn it off and we reboot loop).  
   // ESP32 module will run to about 2.15v if not rebooted
-#if defined (BUCK) // If 3.7v LiPo dont reboot below this voltage
+#if defined (BUCK) // If Buck dont reboot below this voltage
   if (readV() > 2700) {
 #else
   if (readV() > 2500) { // If 2 x AA / AAA dont reboot below this voltage
@@ -882,7 +830,7 @@ void loop()
     ESP.restart(); // Should never get here
   } else {
     cam_err = -1; // Dont take any more pictures
-    SerialDebug.printf("  ERROR: Voltage below 2500mV, dont reboot or else we may not restart\n");
+    SerialDebug.printf("ERROR: Voltage below 2500mV, dont reboot or else we may not restart\n");
     digitalWrite(PWDN_GPIO_NUM, HIGH); // turn camera of!
   }
 
