@@ -15,21 +15,21 @@ Debugging output is also on the U0R and U0T pins.
 
 Weights
 ------
-12.4g - Tracker inc 180deg Camera, guitar wire GPS & LoRa Aerial
-25g - 3 x AAA soldered together with wire - lasted 14 hours in freezer
-21g - 2 x AAA in holder with wire
-40g - 2 x AA in holder with wire
-14g - 450Ma LiPo
+12.4g - Tracker inc 180deg Camera, guitar wire GPS & LoRa Aerial<br>
+25g - 3 x AAA soldered together with wire - lasted 14 hours in freezer<br>
+21g - 2 x AAA in holder with wire<br>
+40g - 2 x AA in holder with wire<br>
+14g - 450Ma LiPo<br>
 
-LiPo Version, 26.5g total weight
-1 x Qualtex, 72Ltr Helium, 10g free lift, 0.120m3 unstretched volume, 6,400m burst, 1.7m/sec ascent, 60 mins to burst
-2 x Qualtex, 58Ltr Helium each, 10g free lift each, 0.120m3 unstretched volume, 8,400m burst, 1.9m/sec ascent, 75 mins to burst
+LiPo Version, 26.5g total weight<br>
+1 x Qualtex, 72Ltr Helium, 10g free lift, 0.120m3 unstretched volume, 6,400m burst, 1.7m/sec ascent, 60 mins to burst<br>
+2 x Qualtex, 58Ltr Helium each, 10g free lift each, 0.120m3 unstretched volume, 8,400m burst, 1.9m/sec ascent, 75 mins to burst<br>
 
-AA Version, 52.5g total weight
+AA Version, 52.5g total weight<br>
 1 x 100g Pawan, 200ltr Helium, 50g free lift, 20,325m burst, 2.9m/sec ascent, 117mins to burst
 
-AAA Version, 12.5g + 25g = 38g total weight
-1 x Qualtex, 70Ltr Helium, 10g free lift, 0.120m3 unstretched volume, 4,900m burst, 1.7m/sec ascent, 48 mins to burst
+AAA Version, 12.5g + 25g = 38g total weight<br>
+1 x Qualtex, 70Ltr Helium, 10g free lift, 0.120m3 unstretched volume, 4,900m burst, 1.7m/sec ascent, 48 mins to burst<br>
 2 x Qualtex, 62Ltr Helium each, 10g free lift each, 0.120m3 unstretched volume, 7,500m burst, 1.9m/sec ascent, 65 mins to burst
 
 2 x Chineese, 58Ltr Helium each, 6g free lift each, 0.120m3 unstretched volume, 7,640m burst, 1.9m/sec ascent, 65 mins to float!  42g / 2 = 21g each + 6g = 27g each
