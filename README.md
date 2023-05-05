@@ -21,17 +21,16 @@ Weights
 40g - 2 x AA in holder with wire<br>
 14g - 450Ma LiPo<br>
 
-LiPo Version, 26.5g total weight<br>
+LiPo Version, 26.5g total weight:<br>
 1 x Qualtex, 72Ltr Helium, 10g free lift, 0.120m3 unstretched volume, 6,400m burst, 1.7m/sec ascent, 60 mins to burst<br>
 2 x Qualtex, 58Ltr Helium each, 10g free lift each, 0.120m3 unstretched volume, 8,400m burst, 1.9m/sec ascent, 75 mins to burst<br>
 
-AA Version, 52.5g total weight<br>
+AA Version, 52.5g total weight:<br>
 1 x 100g Pawan, 200ltr Helium, 50g free lift, 20,325m burst, 2.9m/sec ascent, 117mins to burst
 
-AAA Version, 12.5g + 25g = 38g total weight<br>
+AAA Version, 12.5g + 25g = 38g total weight:<br>
 1 x Qualtex, 70Ltr Helium, 10g free lift, 0.120m3 unstretched volume, 4,900m burst, 1.7m/sec ascent, 48 mins to burst<br>
-2 x Qualtex, 62Ltr Helium each, 10g free lift each, 0.120m3 unstretched volume, 7,500m burst, 1.9m/sec ascent, 65 mins to burst
-
+2 x Qualtex, 62Ltr Helium each, 10g free lift each, 0.120m3 unstretched volume, 7,500m burst, 1.9m/sec ascent, 65 mins to burst<br>
 2 x Chineese, 58Ltr Helium each, 6g free lift each, 0.120m3 unstretched volume, 7,640m burst, 1.9m/sec ascent, 65 mins to float!  42g / 2 = 21g each + 6g = 27g each
 
 Buck version intended for LiPo but used for 3 x AAA
@@ -108,10 +107,10 @@ Included in esp32 v1.04:
 
 ESP32 Cam module
 ----------------
-https://randomnerdtutorials.com/esp32-cam-ai-thinker-pinout/
-https://docs.ai-thinker.com/esp32-cam
-https://docs.ai-thinker.com/_media/esp32/docs/esp32_cam_sch.pdf
-https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf
+https://randomnerdtutorials.com/esp32-cam-ai-thinker-pinout/<br>
+https://docs.ai-thinker.com/esp32-cam<br>
+https://docs.ai-thinker.com/_media/esp32/docs/esp32_cam_sch.pdf<br>
+https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf<br>
 https://github.com/espressif/esptool/wiki/ESP32-Boot-Mode-Selection
 
 GPIO32 controls camera power, but if you power the camera down I cant seem to re-initialise it without a reboot (which is now done through a deep sleep reboot)
@@ -127,21 +126,21 @@ Simple Build Notes  - 3 x AA/AAA option
 ---------------------------------------
 Batteries - 3 x AA/AAA = 4.8v down to 2.4v
 
-Reg - MCP170333MB SOT89 or similar
+Reg - MCP170333MB SOT89 or similar<br>
 Reg - Add C8, C10, C11 & C12 capacitors
 
-GPS - Tested with ATGM or UBlox Max 3.3v GPS chips
+GPS - Tested with ATGM or UBlox Max 3.3v GPS chips<br>
 GPS - Add GPS Ferrites and capacitors
 
-Tx - Add Dorji DRF1278F module
-Tx - Add R1, C7, C3 and C6
+Tx - Add Dorji DRF1278F module<br>
+Tx - Add R1, C7, C3 and C6<br>
 Tx - Set jumper to 3.3v
 
-ESP32 - Add C2, C5, R5 & R6
-ESP32 - Remove ESP32 Regulator and Flash transistor
+ESP32 - Add C2, C5, R5 & R6<br>
+ESP32 - Remove ESP32 Regulator and Flash transistor<br>
 ESP32 - Add ESP32 Camera module to PCB
 
-GPS Antenna - Add chip antenna or 46mm wire (total length)
+GPS Antenna - Add chip antenna or 46mm wire (total length)<br>
 LoRa Antenna - Add 185mm wire (total length)
 
 
@@ -160,13 +159,13 @@ https://github.com/PiInTheSky/lora-gateway
 
 Power Consumption
 ------------------
-ESP32 Cam module with regulator removed and flash LED transistor removed
-	44ma - Default frequency
-	14ma - Reduce to 20Mhz
-	14ma - Turn off BT & WIFI
-	16ma - Post SPI / Lora Setup
-	42ma - Camera setup
-	38ma - Disable camera XCLK
+ESP32 Cam module with regulator removed and flash LED transistor removed<br>
+	44ma - Default frequency<br>
+	14ma - Reduce to 20Mhz<br>
+	14ma - Turn off BT & WIFI<br>
+	16ma - Post SPI / Lora Setup<br>
+	42ma - Camera setup<br>
+	38ma - Disable camera XCLK<br>
 	15ma - Turn off camera
 	
 Board Power Consumption by Frequency, with Lora, GPS and Camera attached but not initialised
